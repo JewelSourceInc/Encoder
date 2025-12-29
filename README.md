@@ -1,2 +1,1 @@
-# Encoder
-Hosting encoder site
+Welcome to Encoder
