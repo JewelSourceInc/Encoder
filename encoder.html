@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SKU Encoder</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Shared Header -->
+    <header class="site-header">
+      <div class="header-inner">
+        <!-- Centered logo row -->
+        <div class="header-row header-row-top">
+          <img
+            src="C:\Users\adesh\Documents\GitHub\SKU\Encoder & Decoder\Resources\logo-dark.png"
+            alt="Logo"
+            class="header-logo"
+          />
+        </div>
+
+        <!-- Navigation row (right-aligned) -->
+        <div class="header-row header-row-bottom">
+          <nav class="main-nav">
+            <a href="encoder.html" class="nav-link active">Encoder</a>
+            <a href="decoder.html" class="nav-link">Decoder</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+
+
+    <main class="site-main">
+      <section class="panel">
+        <h1 class="panel-title">Encoder</h1>
+
+        <div class="panel-columns">
+          <!-- Input section -->
+          <section class="panel-block">
+            <h2 class="block-title">Input</h2>
+
+            <form class="encoder-form" onsubmit="event.preventDefault(); generateEncodedSKU();">
+              <!-- Stone Type -->
+              <div class="field-group">
+                <label class="field-label" for="stone">Stone Type</label>
+                <select id="stone" class="oval-select">
+                  <option value="J">Mined</option>
+                  <option value="A">Lab Grown</option>
+                  <option value="G">Gemstone</option>
+                  <option value="Z">Lab Created</option>
+                </select>
+              </div>
+
+              <!-- Gemstone sub-category (shown only when stone type = Gemstone) -->
+              <div class="field-group" id="gemstone-group" style="display: none;">
+                <label class="field-label" for="gemstone">Gemstone</label>
+                <select id="gemstone" class="oval-select">
+                  <option value="">Select gemstone</option>
+                  <option value="ABA">ABALONE</option>
+                  <option value="AGT">AGATE</option>
+                  <option value="ALE">ALEXANDRITE</option>
+                  <option value="ALX">ALEXITE</option>
+                  <option value="ALO">ALONITE</option>
+                  <option value="AMZ">AMAZONITE</option>
+                  <option value="AME">AMETHYST</option>
+                  <option value="AMT">AMETRINE</option>
+                  <option value="ANG">ANGELITE</option>
+                  <option value="APT">APATITE</option>
+                  <option value="AQM">AQUAMARINE</option>
+                  <option value="BRY">BERYL</option>
+                  <option value="BCF">BI-CLR-FLUORITE</option>
+                  <option value="BAM">BI-COLOR AMETRINE</option>
+                  <option value="BTP">BLUE TOPAZ</option>
+                  <option value="CCZ">CANARY CZ</option>
+                  <option value="CNL">CANELIAN</option>
+                  <option value="CRL">CARNELIAN</option>
+                  <option value="CEY">CAT'S EYE</option>
+                  <option value="CER">CERAMIC</option>
+                  <option value="CES">CEYLON SAPPHIRE</option>
+                  <option value="CHL">CHALCEDONY</option>
+                  <option value="CHR">CHAROITE</option>
+                  <option value="CHM">CHROME</option>
+                  <option value="CHD">CHROME DIOPSIDE</option>
+                  <option value="CHY">CHRYSOCOLLA</option>
+                  <option value="CIT">CITRINE</option>
+                  <option value="CQZ">COGNAC QTZ</option>
+                  <option value="CPE">COIN PEARL</option>
+                  <option value="COR">CORAL</option>
+                  <option value="CAL">CREATED ALEXANDRITE</option>
+                  <option value="CAM">CREATED AMETHYST</option>
+                  <option value="CAQ">CREATED AQUAMARINE</option>
+                  <option value="CCT">CREATED CITRINE</option>
+                  <option value="CEM">CREATED EMERALD</option>
+                  <option value="CEO">CREATED ETHOPIAN OPAL</option>
+                  <option value="CGT">CREATED GARNET</option>
+                  <option value="COP">CREATED OPAL</option>
+                  <option value="CPD">CREATED PERIDOT</option>
+                  <option value="CSP">CREATED SAPPHIRE</option>
+                  <option value="CTP">CREATED TOPAZ</option>
+                  <option value="CWO">CREATED WHITE OPAL</option>
+                  <option value="CRB">CREATEDRUBY</option>
+                  <option value="CRY">CRYSTAL</option>
+                  <option value="CZR">CUBIC ZIRCONIA</option>
+                  <option value="CZS">CZ SAPPHIRE</option>
+                  <option value="DSP">DIFFUSED SAPPHIRE</option>
+                  <option value="EMR">EMERALD</option>
+                  <option value="EOP">ETHOPIAN OPAL</option>
+                  <option value="FOP">FIRE OPAL</option>
+                  <option value="FZI">FIRE ZIRCON</option>
+                  <option value="FLR">FLORITE</option>
+                  <option value="GAR">GARNET</option>
+                  <option value="GLS">GLASS</option>
+                  <option value="GRN">GRANDIDIERITE</option>
+                  <option value="GGT">GRAPE GARNET</option>
+                  <option value="GRS">GRASS</option>
+                  <option value="HEL">HELENITE</option>
+                  <option value="HES">HESSONITE</option>
+                  <option value="HID">HIDDENITE</option>
+                  <option value="HOW">HOWLITE</option>
+                  <option value="IND">INDICOLITE</option>
+                  <option value="IOL">IOLITE</option>
+                  <option value="JAD">JADE</option>
+                  <option value="JSP">JASPER</option>
+                  <option value="KPE">KESHI PEARL</option>
+                  <option value="KUN">KUNZITE</option>
+                  <option value="KYN">KYANITE</option>
+                  <option value="LBD">LABRADORITE</option>
+                  <option value="LAP">LAPIS</option>
+                  <option value="LAM">LARIMAR</option>
+                  <option value="LAV">LARVIKITE</option>
+                  <option value="LBT">LONDON BLUE TOPAZ</option>
+                  <option value="MCT">MADEIRA CITRINE</option>
+                  <option value="MAL">MALACHITE</option>
+                  <option value="MAN">MANDARINE</option>
+                  <option value="MAQ">MILKY AQUA</option>
+                  <option value="MNG">MING</option>
+                  <option value="MZI">MOCHA ZIRCON</option>
+                  <option value="MOS">MOISSANITE</option>
+                  <option value="MOL">MOLDAVITE</option>
+                  <option value="MST">MOONSTONE</option>
+                  <option value="MOP">MOP</option>
+                  <option value="MOR">MORGANITE</option>
+                  <option value="MCZ">MORGANITE CZ</option>
+                  <option value="MTO">MULTI TOURMALINE</option>
+                  <option value="NEO">NEON STONES</option>
+                  <option value="ONX">ONYX</option>
+                  <option value="OPL">OPAL</option>
+                  <option value="ORT">ORTHOCLASE</option>
+                  <option value="PAR">PARIBA</option>
+                  <option value="PBA">PARIBA APATITE</option>
+                  <option value="PAS">PASIOLITE</option>
+                  <option value="PRL">PEARL</option>
+                  <option value="PER">PERIDOT</option>
+                  <option value="PET">PETALITE</option>
+                  <option value="POP">PINK OPAL</option>
+                  <option value="PTP">PINK TOPAZ</option>
+                  <option value="PRA">PRASEOLITE</option>
+                  <option value="QTZ">QUARTZ</option>
+                  <option value="RHO">RHODOLITE</option>
+                  <option value="RHN">RHODONITE</option>
+                  <option value="RRP">RIVER ROCK PEARL</option>
+                  <option value="RQZ">ROSE QUARTZ</option>
+                  <option value="RBE">RUBELLITE</option>
+                  <option value="RUB">RUBY</option>
+                  <option value="SAQ">SANTA AQUAMARINE</option>
+                  <option value="SAP">SAPPHIRE</option>
+                  <option value="SCP">SCAPOLITE</option>
+                  <option value="SIM">SILLIMANITE</option>
+                  <option value="SIL">SILLIMITE</option>
+                  <option value="SQZ">SMOKY QUARTZ</option>
+                  <option value="SPA">SPALERITER</option>
+                  <option value="SPS">SPESSARTITE</option>
+                  <option value="SPH">SPHALERITE</option>
+                  <option value="SPN">SPHENE</option>
+                  <option value="SPI">SPINAL</option>
+                  <option value="SKY">SKY BLUE TOPAZ</option>
+                  <option value="SWS">SWISS BLUE TOPAZ</option>
+                  <option value="SCO">SPINY CORAL</option>
+                  <option value="SGC">SPONGE CORAL</option>
+                  <option value="SCA">SWA CRYSTAL AMETHYST</option>
+                  <option value="SCQ">SWA CRYSTAL AQUAMARINE</option>
+                  <option value="SCC">SWA CRYSTAL CRYSTAL</option>
+                  <option value="SCE">SWA CRYSTAL EMERALD</option>
+                  <option value="SLA">SWA CRYSTAL LIGHT AMETHYST</option>
+                  <option value="SLS">SWA CRYSTAL LIGHT SAPPHIRE</option>
+                  <option value="SLI">SWA CRYSTAL LIGHT SIAM</option>
+                  <option value="SCP">SWA CRYSTAL PERIDOT</option>
+                  <option value="SCR">SWA CRYSTAL ROSE</option>
+                  <option value="SRB">SWA CRYSTAL RUBY</option>
+                  <option value="SCS">SWA CRYSTAL SAPPHIRE</option>
+                  <option value="SCT">SWA CRYSTAL TOPAZ</option>
+                  <option value="SCZ">SWA CZ RUBY</option>
+                  <option value="SWC">SWAROVSKI CZ</option>
+                  <option value="SWB">SWISS BLUE</option>
+                  <option value="TAN">TANZANITE</option>
+                  <option value="TIG">TIGER</option>
+                  <option value="TPZ">TOPAZ</option>
+                  <option value="TOU">TOURMALINE</option>
+                  <option value="TSV">TSAVORITE</option>
+                  <option value="TUR">TURKIZITE</option>
+                  <option value="TRQ">TURQUOISE</option>
+                  <option value="WTP">WHITE TOPAZ</option>
+                  <option value="WZI">WHITE ZIRCON</option>
+                  <option value="ZRC">ZIRCON</option>
+                  <option value="ZUL">ZULTANITE</option>
+                </select>
+              </div>
+
+              <div class="field-group" id="gem-carat-group" style="display: none;">
+                <label class="field-label" for="gem-carat">Carat (If applicable)</label>
+                <input
+                  id="gem-carat"
+                  type="number"
+                  class="rect-input"
+                  step="0.01"
+                  min="0.10"
+                  max="99"
+                  placeholder="0.10 to 99.00"
+                />
+              </div>
+
+
+              <!-- Carat input (shown when stone type is NOT gemstone) -->
+              <div class="field-group" id="carat-group" style="display: none;">
+                <label class="field-label" for="carat">Carat</label>
+                <input
+                  id="carat"
+                  type="number"
+                  class="rect-input"
+                  step="0.01"
+                  min="0.10"
+                  max="99"
+                  placeholder="0.10 to 99.00"
+                />
+              </div>
+
+
+              <!-- Style + Size (unchanged) -->
+              <div class="field-group">
+                <label class="field-label" for="style">Style</label>
+                <select id="style" class="oval-select">
+                  <option value="">Select style</option>
+                  <option value="E">Earring</option>
+                  <option value="P">Pendant</option>
+                  <option value="N">Necklace</option>
+                  <option value="R">Ring</option>
+                  <option value="B">Bangle/Bracelet</option>
+                  <option value="S">Set</option>
+                </select>
+              </div>
+
+              <div class="field-group" id="sub-category-group" style="display: none;">
+                <label class="field-label" for="sub-category">Size</label>
+                <select id="sub-category" class="oval-select">
+                  <option value="">Select size</option>
+                  <!-- Necklace sizes -->
+                  <option value="A" data-parent="N">16 inches</option>
+                  <option value="B" data-parent="N">17 inches</option>
+                  <option value="C" data-parent="N">18 inches</option>
+                  <option value="D" data-parent="N">20 inches</option>
+                  <option value="E" data-parent="N">22 inches</option>
+                  <option value="F" data-parent="N">24 inches</option>
+                  <!-- Ring sizes -->
+                  <option value="A" data-parent="R">4</option>
+                  <option value="B" data-parent="R">4.5</option>
+                  <option value="C" data-parent="R">5</option>
+                  <option value="D" data-parent="R">5.5</option>
+                  <option value="E" data-parent="R">6</option>
+                  <option value="F" data-parent="R">6.5</option>
+                  <option value="G" data-parent="R">7</option>
+                  <option value="H" data-parent="R">7.5</option>
+                  <option value="I" data-parent="R">8</option>
+                  <option value="J" data-parent="R">8.5</option>
+                  <option value="K" data-parent="R">9</option>
+                  <option value="L" data-parent="R">9.5</option>
+                  <option value="M" data-parent="R">10</option>
+                  <option value="N" data-parent="R">10.5</option>
+                  <option value="O" data-parent="R">11</option>
+                  <option value="P" data-parent="R">11.5</option>
+                  <option value="Q" data-parent="R">12</option>
+                  <!-- Bangle/Bracelet sizes -->
+                  <option value="A" data-parent="B">6 inches</option>
+                  <option value="B" data-parent="B">6.25 inches</option>
+                  <option value="C" data-parent="B">6.5 inches</option>
+                  <option value="D" data-parent="B">7 inches</option>
+                  <option value="E" data-parent="B">7.25 inches</option>
+                  <option value="F" data-parent="B">7.5 inches</option>
+                  <option value="G" data-parent="B">8 inches</option>
+                </select>
+              </div>
+
+              <!-- Metal Type + Metal Option -->
+              <div class="field-group">
+                <label class="field-label" for="metal-type">Metal Type</label>
+                <select id="metal-type" class="oval-select">
+                  <option value="">Select metal type</option>
+                  <option value="10KT">10KT</option>
+                  <option value="14KT">14KT</option>
+                  <option value="18KT">18KT</option>
+                  <option value="9KT">9KT</option>
+                  <option value="SIL">Silver</option>
+                  <option value="PLT">Platinum</option>
+                  <option value="SPC">Special</option>
+                </select>
+              </div>
+
+              <div class="field-group" id="metal-option-group" style="display: none;">
+                <label class="field-label" for="metal-option">Metal</label>
+                <select id="metal-option" class="oval-select">
+                  <option value="">Select metal</option>
+
+                  <!-- 10KT -->
+                  <option value="A" data-parent="10KT">10KY - YELLOW</option>
+                  <option value="B" data-parent="10KT">10KW - WHITE</option>
+                  <option value="C" data-parent="10KT">10KR - ROSE</option>
+                  <option value="D" data-parent="10KT">10KTT - TWO-TONE</option>
+
+                  <!-- 14KT -->
+                  <option value="P" data-parent="14KT">14KY - YELLOW</option>
+                  <option value="Q" data-parent="14KT">14KW - WHITE</option>
+                  <option value="R" data-parent="14KT">14KR - ROSE</option>
+                  <option value="T" data-parent="14KT">14KTT - TWO-TONE</option>
+
+                  <!-- 18KT -->
+                  <option value="E" data-parent="18KT">18KY - YELLOW</option>
+                  <option value="F" data-parent="18KT">18KW - WHITE</option>
+                  <option value="G" data-parent="18KT">18KR - ROSE</option>
+                  <option value="H" data-parent="18KT">18KR - TWO-TONE</option>
+
+                  <!-- 9KT -->
+                  <option value="X" data-parent="9KT">9KY - YELLOW</option>
+                  <option value="Y" data-parent="9KT">9KW - WHITE</option>
+                  <option value="Z" data-parent="9KT">9KR - ROSE</option>
+                  <option value="W" data-parent="9KT">9KTT - TWO-TONE</option>
+
+                  <!-- SILVER -->
+                  <option value="J" data-parent="SIL">RPS - RHODIUM PLATED</option>
+                  <option value="K" data-parent="SIL">YPS - YELLOW PLATED</option>
+                  <option value="L" data-parent="SIL">ROS - ROSE PLATED</option>
+                  <option value="M" data-parent="SIL">TTPS - TWO-TONED PLATED</option>
+                  <option value="N" data-parent="SIL">3TPS - THREE-TONED PLATED</option>
+
+                  <!-- Platinum -->
+                  <option value="U" data-parent="PLT">PLAT - Platinum</option>
+
+                  <!-- Special -->
+                  <option value="S" data-parent="SPC">SPEC - Special</option>
+                </select>
+              </div>
+
+              <!-- Unique Identifier -->
+              <div class="field-group">
+                <label class="field-label" for="unique-id">Enter Unique Identifier</label>
+                <input
+                  id="unique-id"
+                  type="text"
+                  class="rect-input"
+                  maxlength="6"
+                  pattern="[A-Za-z0-9]{0,6}"
+                  placeholder="Up to 6 characters"
+                />
+              </div>
+
+              <div id="sku-error" class="error-message" style="display: none;">
+              <!-- Error text will be injected here -->
+              </div>
+
+
+              <!-- Generate button -->
+              <button type="submit" class="primary-button full-width">
+                Generate
+              </button>
+            </form>
+
+          </section>
+
+          <!-- Output section -->
+          <section class="panel-block">
+            <h2 class="block-title">Output</h2>
+
+            <!-- Blue box that shows output -->
+            <div class="output-card">
+              <div id="encoder-output" class="output-text">
+                Generated SKU will appear here.
+              </div>
+
+              <!-- Copy text bottom-right -->
+              <button
+                type="button"
+                class="copy-button"
+                onclick="copyEncoderOutput()"
+              >
+                Copy
+              </button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const MAX_SKU_LENGTH = 13;
+
+    // ---- Utility: format carat to 3 char string ----
+    function formatCaratTo3Chars(rawValue) {
+      if (!rawValue) return '000';
+
+      const value = parseFloat(rawValue);
+      if (Number.isNaN(value) || value <= 0) return '000';
+
+      if (value < 10) {
+        // 0.10 -> "010", 8.5 -> "850"
+        const scaled = Math.round(value * 100); // two decimals
+        return String(scaled).padStart(3, '0'); // ensure 3 chars [web:17][web:19]
+      }
+
+      // 10 or more: 12.00 -> "12T", 13.5 -> "13T"
+      const whole = Math.floor(value);
+      const code = String(whole) + 'T';
+
+      // For values like 100+, still keep only 3 chars
+      return code.slice(0, 3);
+    }
+
+    // ---- Generate SKU ----
+    function generateEncodedSKU() {
+    // Clear previous error state
+    const errorBox = document.getElementById('sku-error');
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
+
+    const errorFields = document.querySelectorAll('.field-error');
+    errorFields.forEach((el) => el.classList.remove('field-error'));
+
+    // 1: STONE TYPE
+    const stoneEl = document.getElementById('stone');
+    const stone = (stoneEl.value || '').trim();
+
+    // 2: STYLE
+    const styleEl = document.getElementById('style');
+    const style = (styleEl.value || '').trim();
+
+    // 3–5: CARAT OR GEMSTONE
+    const gemstoneGroup = document.getElementById('gemstone-group');
+    const caratGroup = document.getElementById('carat-group');
+    const gemstoneEl = document.getElementById('gemstone');
+    const caratEl = document.getElementById('carat');
+
+    let gemstoneCode = '';
+    let caratCodeRaw = '';
+
+    if (gemstoneGroup && gemstoneGroup.style.display !== 'none') {
+      gemstoneCode = (gemstoneEl.value || '').trim();
+    } else if (caratGroup && caratGroup.style.display !== 'none') {
+      caratCodeRaw = (caratEl.value || '').trim();
+    }
+
+    // 4: METAL option
+    const metalOptionGroup = document.getElementById('metal-option-group');
+    const metalOptionEl = document.getElementById('metal-option');
+    let metalOption = '';
+    if (metalOptionGroup && metalOptionGroup.style.display !== 'none') {
+      metalOption = (metalOptionEl.value || '').trim();
+    }
+
+    // 5: UNIQUE IDENTIFIER
+    const uniqueInput = document.getElementById('unique-id');
+    let uniqueIdRaw = (uniqueInput.value || '').trim();
+
+    // 6: SIZE (conditionally required)
+    const subCatGroup = document.getElementById('sub-category-group');
+    const subCatEl = document.getElementById('sub-category');
+    let size = '';
+    if (subCatGroup && subCatGroup.style.display !== 'none') {
+      size = (subCatEl.value || '').trim();
+    }
+
+    const missing = [];
+
+    // Always required
+    if (!stone) {
+      missing.push('Stone Type');
+      stoneEl.classList.add('field-error');
+    }
+
+    if (!style) {
+      missing.push('Style');
+      styleEl.classList.add('field-error');
+    }
+
+    // Either gemstone OR carat required
+    if (!gemstoneCode && !caratCodeRaw) {
+      missing.push('Carat / Gemstone');
+      if (gemstoneGroup && gemstoneGroup.style.display !== 'none') {
+        gemstoneEl.classList.add('field-error');
+      } else if (caratGroup && caratGroup.style.display !== 'none') {
+        caratEl.classList.add('field-error');
+      }
+    }
+
+    if (!metalOption) {
+      missing.push('Metal');
+      metalOptionEl.classList.add('field-error');
+    }
+
+    if (!uniqueIdRaw) {
+      missing.push('Unique Identifier');
+      uniqueInput.classList.add('field-error');
+    }
+
+    // Size required only when style is Necklace (N), Ring (R), or Bangle/Bracelet (B)
+    const styleNeedsSize = ['N', 'R', 'B'].includes(style);
+    if (styleNeedsSize) {
+      if (!size) {
+        missing.push('Size');
+        if (subCatGroup && subCatGroup.style.display !== 'none') {
+          subCatEl.classList.add('field-error');
+        }
+      }
+    }
+
+    if (missing.length > 0) {
+      // Show inline error above Generate button
+      errorBox.textContent =
+        'Please fill all required fields: ' + missing.join(', ');
+      errorBox.style.display = 'block';
+
+      document.getElementById('encoder-output').textContent =
+        'Generated SKU will appear here.';
+      return;
+    }
+
+    // ---- All required fields present, build SKU ----
+
+    // 1: stone (1 char)
+    const stoneChar = stone.slice(0, 1);
+
+    // 2: style (1 char)
+    const styleChar = style.slice(0, 1);
+
+    // 3–5: carat or gemstone (3 chars)
+    let pos3to5 = '000';
+    if (gemstoneCode) {
+      pos3to5 = gemstoneCode.slice(0, 3);
+    } else {
+      pos3to5 = formatCaratTo3Chars(caratCodeRaw);
+    }
+
+    // 6: metal option (1 char)
+    const pos6 = metalOption.slice(0, 1);
+
+    // 7–12: unique ID (6 chars)
+    let uniqueId = uniqueIdRaw.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (uniqueId.length > 6) {
+      uniqueId = uniqueId.slice(0, 6);
+    } else {
+      uniqueId = uniqueId.padEnd(6, 'X'); // pad if shorter [web:17][web:19]
+    }
+
+    // 13: size (1 char) or X if not applicable
+    let pos13;
+    if (styleNeedsSize) {
+      pos13 = size.slice(0, 1); // already checked non-empty
+    } else {
+      pos13 = 'X';
+    }
+
+    const raw =
+      stoneChar +   // 1
+      styleChar +   // 2
+      pos3to5 +     // 3-5
+      pos6 +        // 6
+      uniqueId +    // 7-12
+      pos13;        // 13
+
+    const finalSku = raw.slice(0, 13);
+    document.getElementById('encoder-output').textContent = finalSku;
+  }
+
+
+
+
+    function copyEncoderOutput() {
+      const text = document.getElementById('encoder-output').textContent.trim();
+      if (!text) return;
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // ----- Style -> Size dropdown -----
+      const styleSelect = document.getElementById('style');
+      const subCategoryGroup = document.getElementById('sub-category-group');
+      const subCategorySelect = document.getElementById('sub-category');
+      const allSubOptions = Array.from(subCategorySelect.options);
+
+      function updateSubCategoryVisibility() {
+        const mainValue = styleSelect.value;
+        const hasSize = ['N', 'R', 'B'].includes(mainValue);
+
+        if (!hasSize) {
+          subCategoryGroup.style.display = 'none';
+          subCategorySelect.value = '';
+          return;
+        }
+
+        subCategoryGroup.style.display = 'block';
+
+        allSubOptions.forEach((opt) => {
+          const parent = opt.getAttribute('data-parent');
+          if (!parent) {
+            opt.hidden = false;
+            return;
+          }
+          opt.hidden = parent !== mainValue;
+        });
+
+        subCategorySelect.value = '';
+      }
+
+      styleSelect.addEventListener('change', updateSubCategoryVisibility);
+      updateSubCategoryVisibility();
+
+      // ----- Stone Type -> Gemstone vs Carat + Gem Carat field -----
+      const stoneSelect = document.getElementById('stone');
+      const gemstoneGroup = document.getElementById('gemstone-group');
+      const gemstoneSelect = document.getElementById('gemstone');
+      const caratGroup = document.getElementById('carat-group');
+      const caratInput = document.getElementById('carat');
+
+      const gemCaratGroup = document.getElementById('gem-carat-group');
+      const gemCaratInput = document.getElementById('gem-carat');
+
+      function updateStoneDetails() {
+        const stoneValue = stoneSelect.value;
+
+        if (stoneValue === 'G') {
+          // Gemstone selected
+          gemstoneGroup.style.display = 'block';
+          gemCaratGroup.style.display = 'block';  // show "Carat (If applicable)"
+          caratGroup.style.display = 'none';
+          caratInput.value = '';
+        } else {
+          // Non-gemstone: use main Carat input
+          gemstoneGroup.style.display = 'none';
+          gemstoneSelect.value = '';
+          gemCaratGroup.style.display = 'none';
+          gemCaratInput.value = '';
+          caratGroup.style.display = 'block';
+        }
+      }
+
+      stoneSelect.addEventListener('change', updateStoneDetails);
+      updateStoneDetails();
+
+      // ----- Metal Type -> Metal Option -----
+      const metalTypeSelect = document.getElementById('metal-type');
+      const metalOptionGroup = document.getElementById('metal-option-group');
+      const metalOptionSelect = document.getElementById('metal-option');
+      const allMetalOptions = Array.from(metalOptionSelect.options);
+
+      function updateMetalOptions() {
+        const typeValue = metalTypeSelect.value;
+
+        if (!typeValue) {
+          metalOptionGroup.style.display = 'none';
+          metalOptionSelect.value = '';
+          return;
+        }
+
+        metalOptionGroup.style.display = 'block';
+
+        allMetalOptions.forEach((opt) => {
+          const parent = opt.getAttribute('data-parent');
+          if (!parent) {
+            opt.hidden = false;
+            return;
+          }
+          opt.hidden = parent !== typeValue;
+        });
+
+        metalOptionSelect.value = '';
+      }
+
+      metalTypeSelect.addEventListener('change', updateMetalOptions);
+      updateMetalOptions();
+    });
+  </script>
+
+</body>
+</html>
