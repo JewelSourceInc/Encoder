@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SKU Decoder</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Shared Header -->
+    <header class="site-header">
+      <div class="header-inner">
+        <!-- Centered logo row -->
+        <div class="header-row header-row-top">
+          <img
+            src="C:\Users\adesh\Documents\GitHub\SKU\Encoder & Decoder\Resources\logo-dark.png"
+            alt="Logo"
+            class="header-logo"
+          />
+        </div>
+
+        <!-- Navigation row (right-aligned) -->
+        <div class="header-row header-row-bottom">
+          <nav class="main-nav">
+            <a href="encoder.html" class="nav-link active">Encoder</a>
+            <a href="decoder.html" class="nav-link">Decoder</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+
+
+    <main class="site-main">
+      <section class="panel">
+        <h1 class="panel-title">Decoder</h1>
+
+        <div class="panel-columns">
+          <!-- Input section -->
+          <section class="panel-block">
+            <h2 class="block-title">Input</h2>
+
+            <form class="decoder-form" onsubmit="event.preventDefault(); decodeSKU();">
+              <div class="field-group">
+                <label class="field-label" for="sku-input">
+                  13-digit SKU
+                </label>
+                <!-- Rectangle that takes 13-digit input -->
+                <input
+                  id="sku-input"
+                  type="text"
+                  maxlength="13"
+                  pattern="\\d{13}"
+                  class="rect-input"
+                  placeholder="Enter 13-digit SKU"
+                  required
+                />
+              </div>
+
+              <!-- DECODE rectangle button -->
+              <button type="submit" class="primary-button full-width">
+                Decode
+              </button>
+            </form>
+          </section>
+
+          <!-- Output section -->
+          <section class="panel-block">
+            <h2 class="block-title">Output</h2>
+
+            <div class="decoder-output-list">
+              <!-- 7–8 generated details from the input -->
+              <div class="decoded-item">
+                <span class="decoded-label">Category:</span>
+                <span id="decoded-category" class="decoded-value">–</span>
+              </div>
+              <div class="decoded-item">
+                <span class="decoded-label">Brand:</span>
+                <span id="decoded-brand" class="decoded-value">–</span>
+              </div>
+              <div class="decoded-item">
+                <span class="decoded-label">Variant:</span>
+                <span id="decoded-variant" class="decoded-value">–</span>
+              </div>
+              <div class="decoded-item">
+                <span class="decoded-label">Region:</span>
+                <span id="decoded-region" class="decoded-value">–</span>
+              </div>
+              <div class="decoded-item">
+                <span class="decoded-label">Year:</span>
+                <span id="decoded-year" class="decoded-value">–</span>
+              </div>
+              <div class="decoded-item">
+                <span class="decoded-label">Batch:</span>
+                <span id="decoded-batch" class="decoded-value">–</span>
+              </div>
+              <div class="decoded-item">
+                <span class="decoded-label">Checksum:</span>
+                <span id="decoded-checksum" class="decoded-value">–</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function decodeSKU() {
+      const raw = document.getElementById('sku-input').value.trim();
+
+      if (!/^\d{13}$/.test(raw)) {
+        alert('Please enter a valid 13-digit SKU.');
+        return;
+      }
+
+      // Example fake decoding logic just for structure:
+      const categoryCode = raw.slice(0, 3);
+      const brandCode = raw.slice(3, 6);
+      const variantCode = raw.slice(6, 8);
+      const regionCode = raw.slice(8, 10);
+      const yearCode = '20' + raw.slice(10, 12);
+      const checksum = raw.slice(12);
+
+      document.getElementById('decoded-category').textContent = categoryCode;
+      document.getElementById('decoded-brand').textContent = brandCode;
+      document.getElementById('decoded-variant').textContent = variantCode;
+      document.getElementById('decoded-region').textContent = regionCode;
+      document.getElementById('decoded-year').textContent = yearCode;
+      document.getElementById('decoded-batch').textContent = raw.slice(0, 12);
+      document.getElementById('decoded-checksum').textContent = checksum;
+    }
+  </script>
+</body>
+</html>
