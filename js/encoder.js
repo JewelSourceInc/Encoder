@@ -1,3 +1,5 @@
+// encoder.js - Full version with Gemstone Autocomplete
+
 // ---- Constants ----
 const MAX_SKU_LENGTH = 13;
 
@@ -9,17 +11,92 @@ function formatCaratTo3Chars(rawValue) {
   if (Number.isNaN(value) || value <= 0) return "000";
 
   if (value < 10) {
-    // 0.10 -> "010", 8.5 -> "850"
-    const scaled = Math.round(value * 100); // two decimals
-    return String(scaled).padStart(3, "0"); // ensure 3 chars
+    const scaled = Math.round(value * 100);
+    return String(scaled).padStart(3, "0");
   }
 
-  // 10 or more: 12.00 -> "12T", 13.5 -> "13T"
   const whole = Math.floor(value);
   const code = String(whole) + "T";
-
-  // For values like 100+, still keep only 3 chars
   return code.slice(0, 3);
+}
+
+// ---- Gemstone Autocomplete ----
+let gemstoneList = [];
+
+async function initGemstoneAutocomplete() {
+  try {
+    const response = await fetch("data/gemstones.json");
+    gemstoneList = await response.json();
+  } catch (error) {
+    console.error("Failed to load gemstones:", error);
+  }
+}
+
+function populateGemstoneDropdown(matches) {
+  const dropdown = document.getElementById("gemstone-dropdown");
+  console.log("Matches found:", matches.length); // DEBUG
+  
+  dropdown.innerHTML = "";
+
+  if (matches.length === 0) {
+    dropdown.style.display = "none";
+    console.log("No matches, hiding dropdown"); // DEBUG
+    return;
+  }
+
+  matches.slice(0, 8).forEach((gem, index) => {
+    const option = document.createElement("div");
+    option.className = "autocomplete-option";
+    option.textContent = `${gem.name} (${gem.code})`;
+    option.dataset.code = gem.code;
+    option.onclick = () => selectGemstone(gem);
+    dropdown.appendChild(option);
+    console.log(`Added option ${index + 1}:`, gem.name); // DEBUG
+  });
+
+  dropdown.style.display = "block";
+  dropdown.style.background = "yellow"; // TEMP VISUAL CONFIRMATION
+  console.log("Dropdown should be visible now"); // DEBUG
+}
+
+function selectGemstone(gem) {
+  document.getElementById("gemstone-input").value = `${gem.name} (${gem.code})`;
+  document.getElementById("gemstone").value = gem.code;
+  document.getElementById("gemstone-dropdown").style.display = "none";
+}
+
+function setupGemstoneInput() {
+  const input = document.getElementById("gemstone-input");
+  let timeout;
+
+  input.addEventListener("input", () => {
+    clearTimeout(timeout);
+    const query = input.value.toLowerCase().trim();
+
+    timeout = setTimeout(() => {
+      if (query.length < 2) {
+        document.getElementById("gemstone-dropdown").style.display = "none";
+        return;
+      }
+
+      const matches = gemstoneList.filter(gem =>
+        gem.name.toLowerCase().includes(query) ||
+        gem.code.toLowerCase().includes(query)
+      );
+
+      populateGemstoneDropdown(matches);
+    }, 200);
+  });
+
+  input.addEventListener("focus", () => {
+    if (input.value) populateGemstoneDropdown(gemstoneList);
+  });
+
+  input.addEventListener("blur", () => {
+    setTimeout(() => {
+      document.getElementById("gemstone-dropdown").style.display = "none";
+    }, 200);
+  });
 }
 
 // ---- SKU generation ----
@@ -40,17 +117,17 @@ window.generateEncodedSKU = function () {
   const styleEl = document.getElementById("style");
   const style = (styleEl.value || "").trim();
 
-  // 3–5: CARAT OR GEMSTONE
+  // 3–5: CARAT OR GEMSTONE (UPDATED for autocomplete)
   const gemstoneGroup = document.getElementById("gemstone-group");
   const caratGroup = document.getElementById("carat-group");
-  const gemstoneEl = document.getElementById("gemstone");
+  const gemstoneHidden = document.getElementById("gemstone"); // Hidden field
   const caratEl = document.getElementById("carat");
 
   let gemstoneCode = "";
   let caratCodeRaw = "";
 
   if (gemstoneGroup && gemstoneGroup.style.display !== "none") {
-    gemstoneCode = (gemstoneEl.value || "").trim();
+    gemstoneCode = (gemstoneHidden.value || "").trim(); // Use hidden field
   } else if (caratGroup && caratGroup.style.display !== "none") {
     caratCodeRaw = (caratEl.value || "").trim();
   }
@@ -67,7 +144,7 @@ window.generateEncodedSKU = function () {
   const uniqueInput = document.getElementById("unique-id");
   let uniqueIdRaw = (uniqueInput.value || "").trim();
 
-  // 6: SIZE (conditionally required)
+  // 6: SIZE
   const subCatGroup = document.getElementById("sub-category-group");
   const subCatEl = document.getElementById("sub-category");
   let size = "";
@@ -77,7 +154,6 @@ window.generateEncodedSKU = function () {
 
   const missing = [];
 
-  // Always required
   if (!stone) {
     missing.push("Stone Type");
     stoneEl.classList.add("field-error");
@@ -88,11 +164,10 @@ window.generateEncodedSKU = function () {
     styleEl.classList.add("field-error");
   }
 
-  // Either gemstone OR carat required
   if (!gemstoneCode && !caratCodeRaw) {
     missing.push("Carat / Gemstone");
     if (gemstoneGroup && gemstoneGroup.style.display !== "none") {
-      gemstoneEl.classList.add("field-error");
+      document.getElementById("gemstone-input").classList.add("field-error");
     } else if (caratGroup && caratGroup.style.display !== "none") {
       caratEl.classList.add("field-error");
     }
@@ -108,71 +183,35 @@ window.generateEncodedSKU = function () {
     uniqueInput.classList.add("field-error");
   }
 
-  // Size required only when style is Necklace (N), Ring (R), or Bangle/Bracelet (B)
   const styleNeedsSize = ["N", "R", "B"].includes(style);
-  if (styleNeedsSize) {
-    if (!size) {
-      missing.push("Size");
-      if (subCatGroup && subCatGroup.style.display !== "none") {
-        subCatEl.classList.add("field-error");
-      }
+  if (styleNeedsSize && !size) {
+    missing.push("Size");
+    if (subCatGroup && subCatGroup.style.display !== "none") {
+      subCatEl.classList.add("field-error");
     }
   }
 
   if (missing.length > 0) {
-    errorBox.textContent =
-      "Please fill all required fields: " + missing.join(", ");
+    errorBox.textContent = "Please fill all required fields: " + missing.join(", ");
     errorBox.style.display = "block";
-
-    document.getElementById("encoder-output").textContent =
-      "Generated SKU will appear here.";
+    document.getElementById("encoder-output").textContent = "Generated SKU will appear here.";
     return;
   }
 
-  // ---- All required fields present, build SKU ----
-
-  // 1: stone (1 char)
+  // Build SKU (same logic)
   const stoneChar = stone.slice(0, 1);
-
-  // 2: style (1 char)
   const styleChar = style.slice(0, 1);
-
-  // 3–5: carat or gemstone (3 chars)
-  let pos3to5 = "000";
-  if (gemstoneCode) {
-    pos3to5 = gemstoneCode.slice(0, 3);
-  } else {
-    pos3to5 = formatCaratTo3Chars(caratCodeRaw);
-  }
-
-  // 6: metal option (1 char)
+  let pos3to5 = gemstoneCode ? gemstoneCode.slice(0, 3) : formatCaratTo3Chars(caratCodeRaw);
   const pos6 = metalOption.slice(0, 1);
 
-  // 7–12: unique ID (6 chars)
   let uniqueId = uniqueIdRaw.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  if (uniqueId.length > 6) {
-    uniqueId = uniqueId.slice(0, 6);
-  } else {
-    uniqueId = uniqueId.padEnd(6, "X");
-  }
+  uniqueId = uniqueId.length > 6 ? uniqueId.slice(0, 6) : uniqueId.padEnd(6, "X");
 
-  // 13: size (1 char) or X if not applicable
-  let pos13;
-  if (styleNeedsSize) {
-    pos13 = size.slice(0, 1); // already checked non-empty
-  } else {
-    pos13 = "X";
-  }
+  const pos13 = styleNeedsSize ? size.slice(0, 1) : "X";
 
-  const raw =
-    stoneChar + // 1
-    styleChar + // 2
-    pos3to5 + // 3-5
-    pos6 + // 6
-    uniqueId + // 7-12
-    pos13; // 13
-
+  const raw = stoneChar + styleChar + pos3to5 + pos6 + uniqueId + pos13;
   const finalSku = raw.slice(0, MAX_SKU_LENGTH);
+  
   document.getElementById("encoder-output").textContent = finalSku;
 };
 
@@ -183,9 +222,13 @@ window.copyEncoderOutput = function () {
   navigator.clipboard.writeText(text).catch(() => {});
 };
 
-// ---- DOM wiring and dynamic dropdowns ----
-document.addEventListener("DOMContentLoaded", function () {
-  // ----- Style -> Size dropdown -----
+// ---- DOM setup ----
+document.addEventListener("DOMContentLoaded", async function () {
+  // Load gemstones for autocomplete FIRST
+  await initGemstoneAutocomplete();
+  setupGemstoneInput();
+
+  // ----- Style -> Size dropdown (unchanged) -----
   const styleSelect = document.getElementById("style");
   const subCategoryGroup = document.getElementById("sub-category-group");
   const subCategorySelect = document.getElementById("sub-category");
@@ -218,13 +261,11 @@ document.addEventListener("DOMContentLoaded", function () {
   styleSelect.addEventListener("change", updateSubCategoryVisibility);
   updateSubCategoryVisibility();
 
-  // ----- Stone Type -> Gemstone vs Carat + Gem Carat field -----
+  // ----- Stone Type -> Gemstone vs Carat (UPDATED for autocomplete) -----
   const stoneSelect = document.getElementById("stone");
   const gemstoneGroup = document.getElementById("gemstone-group");
-  const gemstoneSelect = document.getElementById("gemstone");
   const caratGroup = document.getElementById("carat-group");
   const caratInput = document.getElementById("carat");
-
   const gemCaratGroup = document.getElementById("gem-carat-group");
   const gemCaratInput = document.getElementById("gem-carat");
 
@@ -232,15 +273,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const stoneValue = stoneSelect.value;
 
     if (stoneValue === "G") {
-      // Gemstone selected
       gemstoneGroup.style.display = "block";
-      gemCaratGroup.style.display = "block"; // show "Carat (If applicable)"
+      gemCaratGroup.style.display = "block";
       caratGroup.style.display = "none";
       caratInput.value = "";
+      document.getElementById("gemstone-input").value = "";
+      document.getElementById("gemstone").value = "";
     } else {
-      // Non-gemstone: use main Carat input
       gemstoneGroup.style.display = "none";
-      gemstoneSelect.value = "";
       gemCaratGroup.style.display = "none";
       gemCaratInput.value = "";
       caratGroup.style.display = "block";
@@ -250,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
   stoneSelect.addEventListener("change", updateStoneDetails);
   updateStoneDetails();
 
-  // ----- Metal Type -> Metal Option -----
+  // ----- Metal Type -> Metal Option (unchanged) -----
   const metalTypeSelect = document.getElementById("metal-type");
   const metalOptionGroup = document.getElementById("metal-option-group");
   const metalOptionSelect = document.getElementById("metal-option");

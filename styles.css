@@ -272,3 +272,43 @@ body {
   color: #48c9ed;
 }
 
+/* REPLACE your existing autocomplete CSS with this */
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-input {
+  width: 100%;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;           /* Clean white */
+  border: 1px solid #d0d5dd;     /* Match your input borders */
+  border-top: none;
+  border-radius: 0 0 8px 8px;    /* Rounded bottom corners */
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); /* Match your panel shadow */
+}
+
+.autocomplete-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #101828;                /* Match your body text */
+  border-bottom: 1px solid #e0e4ee; /* Match your borders */
+  transition: background-color 0.15s ease;
+}
+
+.autocomplete-option:hover {
+  background: #f9fafb;           /* Match your input backgrounds */
+}
+
+.autocomplete-option:last-child {
+  border-bottom: none;
+}
