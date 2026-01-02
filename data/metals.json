@@ -1,0 +1,39 @@
+{
+  "10KT": [
+    { "label": "10KY - YELLOW", "code": "A" },
+    { "label": "10KW - WHITE", "code": "B" },
+    { "label": "10KR - ROSE", "code": "C" },
+    { "label": "10KTT - TWO-TONE", "code": "D" }
+  ],
+  "14KT": [
+    { "label": "14KY - YELLOW", "code": "P" },
+    { "label": "14KW - WHITE", "code": "Q" },
+    { "label": "14KR - ROSE", "code": "R" },
+    { "label": "14KTT - TWO-TONE", "code": "T" }
+  ],
+  "18KT": [
+    { "label": "18KY - YELLOW", "code": "E" },
+    { "label": "18KW - WHITE", "code": "F" },
+    { "label": "18KR - ROSE", "code": "G" },
+    { "label": "18KR - TWO-TONE", "code": "H" }
+  ],
+  "9KT": [
+    { "label": "9KY - YELLOW", "code": "X" },
+    { "label": "9KW - WHITE", "code": "Y" },
+    { "label": "9KR - ROSE", "code": "Z" },
+    { "label": "9KTT - TWO-TONE", "code": "W" }
+  ],
+  "SIL": [
+    { "label": "RPS - RHODIUM PLATED", "code": "J" },
+    { "label": "YPS - YELLOW PLATED", "code": "K" },
+    { "label": "ROS - ROSE PLATED", "code": "L" },
+    { "label": "TTPS - TWO-TONED PLATED", "code": "M" },
+    { "label": "3TPS - THREE-TONED PLATED", "code": "N" }
+  ],
+  "PLT": [
+    { "label": "PLAT - Platinum", "code": "U" }
+  ],
+  "SPC": [
+    { "label": "SPEC - Special", "code": "S" }
+  ]
+}
