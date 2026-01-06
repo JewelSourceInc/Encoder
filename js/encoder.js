@@ -3,6 +3,12 @@
 // ---- Constants ----
 const MAX_SKU_LENGTH = 13;
 
+// NEW: Auto-select single-option metals
+const singleOptionMetalTypes = {
+  'SPC': 'S',   // SPEC - Special (S)
+  'PLT': 'U'   // PLAT - Platinum (U)
+};
+
 // ---- Utility: format carat to 3-char string ----
 function formatCaratTo3Chars(rawValue) {
   if (!rawValue) return "000";
@@ -297,6 +303,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   const allMetalOptions = Array.from(metalOptionSelect.options);
 
   function updateMetalOptions() {
+    const metalTypeSelect = document.getElementById("metal-type");
+    const metalOptionGroup = document.getElementById("metal-option-group");
+    const metalOptionSelect = document.getElementById("metal-option");
+    const allMetalOptions = Array.from(metalOptionSelect.options);
+    
     const typeValue = metalTypeSelect.value;
 
     if (!typeValue) {
@@ -307,6 +318,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     metalOptionGroup.style.display = "block";
 
+    // Filter options by metal type
     allMetalOptions.forEach((opt) => {
       const parent = opt.getAttribute("data-parent");
       if (!parent) {
@@ -316,8 +328,17 @@ document.addEventListener("DOMContentLoaded", async function () {
       opt.hidden = parent !== typeValue;
     });
 
-    metalOptionSelect.value = "";
+    // FIXED: Check auto-select BEFORE clearing value
+    if (singleOptionMetalTypes[typeValue]) {
+      const autoCode = singleOptionMetalTypes[typeValue];
+      metalOptionSelect.value = autoCode;
+      metalOptionSelect.disabled = true;
+    } else {
+      metalOptionSelect.disabled = false;
+      metalOptionSelect.value = ""; // Only clear for multi-option types
+    }
   }
+
 
   metalTypeSelect.addEventListener("change", updateMetalOptions);
   updateMetalOptions();
