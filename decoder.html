@@ -1,35 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SKU Decoder</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="page-wrapper">
-    <!-- Shared Header -->
+    <!-- Same header as encoder -->
     <header class="site-header">
       <div class="header-inner">
-        <!-- Centered logo row -->
         <div class="header-row header-row-top">
-          <img
-            src="Resources/logo-dark.png"
-            alt="Logo"
-            class="header-logo"
-          />
+          <img src="Resources/logo-dark.png" alt="Logo" class="header-logo"/>
         </div>
-
-        <!-- Navigation row (right-aligned) -->
         <div class="header-row header-row-bottom">
           <nav class="main-nav">
-            <a href="index.html" class="nav-link active">Encoder</a>
-            <a href="decoder.html" class="nav-link">Decoder</a>
+            <a href="index.html" class="nav-link">Encoder</a>
+            <a href="decoder.html" class="nav-link active">Decoder</a>
           </nav>
         </div>
       </div>
     </header>
-
-
 
     <main class="site-main">
       <section class="panel">
@@ -38,65 +30,31 @@
         <div class="panel-columns">
           <!-- Input section -->
           <section class="panel-block">
-            <h2 class="block-title">Input</h2>
-
+            <h2 class="block-title">Enter SKU</h2>
             <form class="decoder-form" onsubmit="event.preventDefault(); decodeSKU();">
               <div class="field-group">
-                <label class="field-label" for="sku-input">
-                  13-digit SKU
-                </label>
-                <!-- Rectangle that takes 13-digit input -->
+                <label class="field-label" for="sku-input">SKU (13 characters)</label>
                 <input
                   id="sku-input"
                   type="text"
-                  maxlength="13"
-                  pattern="\\d{13}"
                   class="rect-input"
-                  placeholder="Enter 13-digit SKU"
-                  required
+                  maxlength="13"
+                  pattern="[A-Z0-9]{13}"
+                  placeholder="Enter 13-character SKU"
+                  style="font-family: monospace; font-size: 18px; letter-spacing: 2px; text-transform: uppercase;"
                 />
               </div>
-
-              <!-- DECODE rectangle button -->
-              <button type="submit" class="primary-button full-width">
-                Decode
-              </button>
+              <div id="decoder-error" class="error-message" style="display: none;"></div>
+              <button type="submit" class="primary-button full-width">Decode</button>
             </form>
           </section>
 
           <!-- Output section -->
           <section class="panel-block">
-            <h2 class="block-title">Output</h2>
-
-            <div class="decoder-output-list">
-              <!-- 7–8 generated details from the input -->
-              <div class="decoded-item">
-                <span class="decoded-label">Category:</span>
-                <span id="decoded-category" class="decoded-value">–</span>
-              </div>
-              <div class="decoded-item">
-                <span class="decoded-label">Brand:</span>
-                <span id="decoded-brand" class="decoded-value">–</span>
-              </div>
-              <div class="decoded-item">
-                <span class="decoded-label">Variant:</span>
-                <span id="decoded-variant" class="decoded-value">–</span>
-              </div>
-              <div class="decoded-item">
-                <span class="decoded-label">Region:</span>
-                <span id="decoded-region" class="decoded-value">–</span>
-              </div>
-              <div class="decoded-item">
-                <span class="decoded-label">Year:</span>
-                <span id="decoded-year" class="decoded-value">–</span>
-              </div>
-              <div class="decoded-item">
-                <span class="decoded-label">Batch:</span>
-                <span id="decoded-batch" class="decoded-value">–</span>
-              </div>
-              <div class="decoded-item">
-                <span class="decoded-label">Checksum:</span>
-                <span id="decoded-checksum" class="decoded-value">–</span>
+            <h2 class="block-title">Decoded Information</h2>
+            <div class="output-card">
+              <div id="decoder-output" class="output-text">
+                Decoded SKU details will appear here.
               </div>
             </div>
           </section>
@@ -106,31 +64,179 @@
   </div>
 
   <script>
-    function decodeSKU() {
-      const raw = document.getElementById('sku-input').value.trim();
+    // SKU Decoder Logic (matches your encoder exactly)
+    const DECODE_MAP = {
+      // Stone types (position 1)
+      stones: {
+        'J': 'Mined (J)',
+        'A': 'Lab Grown (A)',
+        'G': 'Gemstone (G)',
+        'Z': 'Lab Created (Z)'
+      },
+      
+      // Styles (position 2)
+      styles: {
+        'E': 'Earring (E)',
+        'P': 'Pendant (P)',
+        'N': 'Necklace (N)',
+        'R': 'Ring (R)',
+        'B': 'Bangle/Bracelet (B)',
+        'S': 'Set (S)'
+      },
+      
+      // Style → Size mappings (position 13)
+      sizes: {
+        'N': { 'A': '16 inches', 'B': '17 inches', 'C': '18 inches', 'D': '20 inches', 'E': '22 inches', 'F': '24 inches' },
+        'R': { 'A': '4', 'B': '4.5', 'C': '5', 'D': '5.5', 'E': '6', 'F': '6.5', 'G': '7', 'H': '7.5', 'I': '8', 'J': '8.5', 'K': '9', 'L': '9.5', 'M': '10', 'N': '10.5', 'O': '11', 'P': '11.5', 'Q': '12' },
+        'B': { 'A': '6 inches', 'B': '6.25 inches', 'C': '6.5 inches', 'D': '7 inches', 'E': '7.25 inches', 'F': '7.5 inches', 'G': '8 inches' }
+      },
+      
+      // Metals (position 6 + metal_type context)
+      metals: {
+        '10KT': { 'A': '10KY - YELLOW', 'B': '10KW - WHITE', 'C': '10KR - ROSE', 'D': '10KTT - TWO-TONE' },
+        '14KT': { 'P': '14KY - YELLOW', 'Q': '14KW - WHITE', 'R': '14KR - ROSE', 'T': '14KTT - TWO-TONE' },
+        '18KT': { 'E': '18KY - YELLOW', 'F': '18KW - WHITE', 'G': '18KR - ROSE', 'H': '18KTT - TWO-TONE' },
+        '9KT':  { 'X': '9KY - YELLOW', 'Y': '9KW - WHITE', 'Z': '9KR - ROSE', 'W': '9KTT - TWO-TONE' },
+        'SIL':  { 'J': 'RPS - RHODIUM PLATED', 'K': 'YPS - YELLOW PLATED', 'L': 'ROS - ROSE PLATED', 'M': 'TTPS - TWO-TONED PLATED', 'N': '3TPS - THREE-TONED PLATED' },
+        'PLT':  { 'U': 'PLAT - Platinum' },
+        'SPC':  { 'S': 'SPEC - Special' }
+      }
+    };
 
-      if (!/^\d{13}$/.test(raw)) {
-        alert('Please enter a valid 13-digit SKU.');
+    // Carat decoder (positions 3-5)
+    function decodeCarat(caratCode) {
+      if (caratCode === '000') return 'Not specified';
+      
+      if (caratCode.endsWith('T')) {
+        const whole = caratCode.slice(0, -1);
+        return `${whole}.00+ carats`;
+      }
+      
+      const carat = parseInt(caratCode) / 100;
+      return `${carat.toFixed(2)} carats`;
+    }
+
+    // Main decode function
+    window.decodeSKU = function() {
+      // Clear previous state
+      const errorBox = document.getElementById('decoder-error');
+      const output = document.getElementById('decoder-output');
+      errorBox.style.display = 'none';
+      output.innerHTML = '';
+
+      // Get SKU
+      const skuInput = document.getElementById('sku-input');
+      let sku = (skuInput.value || '').replace(/[^A-Z0-9]/g, '').toUpperCase();
+      
+      if (sku.length !== 13) {
+        errorBox.textContent = 'Please enter exactly 13 characters';
+        errorBox.style.display = 'block';
+        skuInput.classList.add('field-error');
         return;
       }
 
-      // Example fake decoding logic just for structure:
-      const categoryCode = raw.slice(0, 3);
-      const brandCode = raw.slice(3, 6);
-      const variantCode = raw.slice(6, 8);
-      const regionCode = raw.slice(8, 10);
-      const yearCode = '20' + raw.slice(10, 12);
-      const checksum = raw.slice(12);
+      skuInput.classList.remove('field-error');
 
-      document.getElementById('decoded-category').textContent = categoryCode;
-      document.getElementById('decoded-brand').textContent = brandCode;
-      document.getElementById('decoded-variant').textContent = variantCode;
-      document.getElementById('decoded-region').textContent = regionCode;
-      document.getElementById('decoded-year').textContent = yearCode;
-      document.getElementById('decoded-batch').textContent = raw.slice(0, 12);
-      document.getElementById('decoded-checksum').textContent = checksum;
+      try {
+        // Parse SKU positions (exactly matches your encoder)
+        const stoneCode = sku[0];
+        const styleCode = sku[1];
+        const caratGemCode = sku.slice(2, 5);  // positions 3-5
+        const metalCode = sku[5];
+        const uniqueId = sku.slice(6, 12);     // positions 7-12
+        const sizeCode = sku[12];
+
+        // Decode each component
+        const decoded = {
+          'SKU': sku,
+          'Stone Type': DECODE_MAP.stones[stoneCode] || 'Unknown (' + stoneCode + ')',
+          'Style': DECODE_MAP.styles[styleCode] || 'Unknown (' + styleCode + ')',
+          'Carat/Gemstone': decodeCarat(caratGemCode) + (isGemstone(caratGemCode) ? ' [GEMSTONE]' : ''),
+          'Unique ID': uniqueId,
+          'Metal Code': metalCode,
+          'Size': DECODE_MAP.sizes[styleCode]?.[sizeCode] || (sizeCode === 'X' ? 'N/A' : 'Unknown (' + sizeCode + ')')
+        };
+
+        // Infer metal type (this is approximate - needs your metal logic)
+        const metalType = inferMetalType(metalCode);
+        if (metalType && DECODE_MAP.metals[metalType]?.[metalCode]) {
+          decoded['Metal'] = `${metalType} - ${DECODE_MAP.metals[metalType][metalCode]}`;
+        } else {
+          decoded['Metal'] = `Code: ${metalCode}`;
+        }
+
+        // Display results
+        output.innerHTML = `
+          <div class="decoded-item">
+            <span class="decoded-label">SKU:</span>
+            <span class="decoded-value">${decoded.SKU}</span>
+          </div>
+          <div class="decoded-item">
+            <span class="decoded-label">Stone Type:</span>
+            <span class="decoded-value">${decoded['Stone Type']}</span>
+          </div>
+          <div class="decoded-item">
+            <span class="decoded-label">Style:</span>
+            <span class="decoded-value">${decoded.Style}</span>
+          </div>
+          <div class="decoded-item">
+            <span class="decoded-label">Carat/Gemstone:</span>
+            <span class="decoded-value">${decoded['Carat/Gemstone']}</span>
+          </div>
+          <div class="decoded-item">
+            <span class="decoded-label">Metal:</span>
+            <span class="decoded-value">${decoded.Metal}</span>
+          </div>
+          <div class="decoded-item">
+            <span class="decoded-label">Unique ID:</span>
+            <span class="decoded-value">${decoded['Unique ID']}</span>
+          </div>
+          ${sizeCode !== 'X' ? `
+          <div class="decoded-item">
+            <span class="decoded-label">Size:</span>
+            <span class="decoded-value">${decoded.Size}</span>
+          </div>
+          ` : ''}
+        `;
+
+      } catch (error) {
+        errorBox.textContent = 'Invalid SKU format';
+        errorBox.style.display = 'block';
+      }
+    };
+
+    // Helper functions
+    function isGemstone(code) {
+      // Gemstone codes are 3 letters, carat codes are numbers or end with T
+      return /^[A-Z]{3}$/.test(code);
     }
+
+    function inferMetalType(metalCode) {
+      // Simple heuristic - improve based on your metal logic
+      if (['A','B','C','D'].includes(metalCode)) return '10KT';
+      if (['P','Q','R','T'].includes(metalCode)) return '14KT';
+      if (['E','F','G','H'].includes(metalCode)) return '18KT';
+      if (['X','Y','Z','W'].includes(metalCode)) return '9KT';
+      if (['J','K','L','M','N'].includes(metalCode)) return 'SIL';
+      if (metalCode === 'U') return 'PLT';
+      if (metalCode === 'S') return 'SPC';
+      return null;
+    }
+
+    // Auto-uppercase and format input
+    document.addEventListener('DOMContentLoaded', function() {
+      const skuInput = document.getElementById('sku-input');
+      skuInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^A-Z0-9]/g, '').toUpperCase().slice(0, 13);
+      });
+      
+      // Allow Enter key to decode
+      skuInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && this.value.length === 13) {
+          decodeSKU();
+        }
+      });
+    });
   </script>
 </body>
 </html>
-
