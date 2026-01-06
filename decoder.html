@@ -64,67 +64,85 @@
   </div>
 
   <script>
-    // SKU Decoder Logic (matches your encoder exactly)
+    // Final Decoder - Size shows label + letter like "16 inches (A)"
     const DECODE_MAP = {
-      // Stone types (position 1)
       stones: {
-        'J': 'Mined (J)',
-        'A': 'Lab Grown (A)',
-        'G': 'Gemstone (G)',
-        'Z': 'Lab Created (Z)'
+        'J': 'Mined (J)', 'A': 'Lab Grown (A)', 'G': 'Gemstone (G)', 'Z': 'Lab Created (Z)'
       },
       
-      // Styles (position 2)
       styles: {
-        'E': 'Earring (E)',
-        'P': 'Pendant (P)',
-        'N': 'Necklace (N)',
-        'R': 'Ring (R)',
-        'B': 'Bangle/Bracelet (B)',
-        'S': 'Set (S)'
+        'E': 'Earring (E)', 'P': 'Pendant (P)', 'N': 'Necklace (N)', 
+        'R': 'Ring (R)', 'B': 'Bangle/Bracelet (B)', 'S': 'Set (S)'
       },
       
-      // Style → Size mappings (position 13)
-      sizes: {
-        'N': { 'A': '16 inches', 'B': '17 inches', 'C': '18 inches', 'D': '20 inches', 'E': '22 inches', 'F': '24 inches' },
-        'R': { 'A': '4', 'B': '4.5', 'C': '5', 'D': '5.5', 'E': '6', 'F': '6.5', 'G': '7', 'H': '7.5', 'I': '8', 'J': '8.5', 'K': '9', 'L': '9.5', 'M': '10', 'N': '10.5', 'O': '11', 'P': '11.5', 'Q': '12' },
-        'B': { 'A': '6 inches', 'B': '6.25 inches', 'C': '6.5 inches', 'D': '7 inches', 'E': '7.25 inches', 'F': '7.5 inches', 'G': '8 inches' }
+      gemstones: {
+        'ABA': 'ABALONE', 'AGT': 'AGATE', 'ALE': 'ALEXANDRITE', 'ALX': 'ALEXITE',
+        'ALO': 'ALONITE', 'AMZ': 'AMAZONITE', 'AME': 'AMETHYST', 'AMT': 'AMETRINE',
+        'ANG': 'ANGELITE', 'APT': 'APATITE', 'AQM': 'AQUAMARINE', 'BRY': 'BERYL',
+        'BCF': 'BI-CLR-FLUORITE', 'BAM': 'BI-COLOR AMETRINE', 'BTP': 'BLUE TOPAZ',
+        'CCZ': 'CANARY CZ', 'CNL': 'CANELIAN', 'CRL': 'CARNELIAN', 'CEY': "CAT'S EYE",
+        'CER': 'CERAMIC', 'CES': 'CEYLON SAPPHIRE', 'CHL': 'CHALCEDONY', 'CHR': 'CHAROITE',
+        'CHM': 'CHROME', 'CHD': 'CHROME DIOPSIDE', 'CHY': 'CHRYSOCOLLA', 'CIT': 'CITRINE',
+        'CQZ': 'COGNAC QTZ', 'CPE': 'COIN PEARL', 'COR': 'CORAL', 'CAL': 'CREATED ALEXANDRITE',
+        'CAM': 'CREATED AMETHYST', 'CAQ': 'CREATED AQUAMARINE', 'CCT': 'CREATED CITRINE',
+        'CEM': 'CREATED EMERALD', 'CEO': 'CREATED ETHOPIAN OPAL', 'CGT': 'CREATED GARNET',
+        'COP': 'CREATED OPAL', 'CPD': 'CREATED PERIDOT', 'CSP': 'CREATED SAPPHIRE',
+        'CTP': 'CREATED TOPAZ', 'CWO': 'CREATED WHITE OPAL', 'CRB': 'CREATEDRUBY',
+        'CRY': 'CRYSTAL', 'CZR': 'CUBIC ZIRCONIA', 'CZS': 'CZ SAPPHIRE', 'DSP': 'DIFFUSED SAPPHIRE',
+        'EMR': 'EMERALD', 'EOP': 'ETHOPIAN OPAL', 'FOP': 'FIRE OPAL', 'FZI': 'FIRE ZIRCON',
+        'FLR': 'FLORITE', 'GAR': 'GARNET', 'GLS': 'GLASS', 'GRN': 'GRANDIDIERITE',
+        'GGT': 'GRAPE GARNET', 'GRS': 'GRASS', 'HEL': 'HELENITE', 'HES': 'HESSONITE',
+        'HID': 'HIDDENITE', 'HOW': 'HOWLITE', 'IND': 'INDICOLITE', 'IOL': 'IOLITE',
+        'JAD': 'JADE', 'JSP': 'JASPER', 'KPE': 'KESHI PEARL', 'KUN': 'KUNZITE',
+        'KYN': 'KYANITE', 'LBD': 'LABRADORITE', 'LAP': 'LAPIS', 'LAM': 'LARIMAR',
+        'LAV': 'LARVIKITE', 'LBT': 'LONDON BLUE TOPAZ', 'MCT': 'MADEIRA CITRINE',
+        'MAL': 'MALACHITE', 'MAN': 'MANDARINE', 'MAQ': 'MILKY AQUA', 'MNG': 'MING',
+        'MZI': 'MOCHA ZIRCON', 'MOS': 'MOISSANITE', 'MOL': 'MOLDAVITE', 'MST': 'MOONSTONE',
+        'MOP': 'MOP', 'MOR': 'MORGANITE', 'MCZ': 'MORGANITE CZ', 'MTO': 'MULTI TOURMALINE',
+        'NEO': 'NEON STONES', 'ONX': 'ONYX', 'OPL': 'OPAL', 'ORT': 'ORTHOCLASE',
+        'PAR': 'PARIBA', 'PBA': 'PARIBA APATITE', 'PAS': 'PASIOLITE', 'PRL': 'PEARL',
+        'PER': 'PERIDOT', 'PET': 'PETALITE', 'POP': 'PINK OPAL', 'PTP': 'PINK TOPAZ',
+        'PRA': 'PRASEOLITE', 'QTZ': 'QUARTZ', 'RHO': 'RHODOLITE', 'RHN': 'RHODONITE',
+        'RRP': 'RIVER ROCK PEARL', 'RQZ': 'ROSE QUARTZ', 'RBE': 'RUBELLITE', 'RUB': 'RUBY',
+        'SAQ': 'SANTA AQUAMARINE', 'SAP': 'SAPPHIRE', 'SCP': 'SCAPOLITE', 'SIM': 'SILLIMANITE',
+        'SIL': 'SILLIMITE', 'SQZ': 'SMOKY QUARTZ', 'SPA': 'SPALERITER', 'SPS': 'SPESSARTITE',
+        'SPH': 'SPHALERITE', 'SPN': 'SPHENE', 'SPI': 'SPINAL', 'SKY': 'SKY BLUE TOPAZ',
+        'SWS': 'SWISS BLUE TOPAZ', 'SCO': 'SPINY CORAL', 'SGC': 'SPONGE CORAL', 'SCA': 'SWA CRYSTAL AMETHYST',
+        'SCQ': 'SWA CRYSTAL AQUAMARINE', 'SCC': 'SWA CRYSTAL CRYSTAL', 'SCE': 'SWA CRYSTAL EMERALD',
+        'SLA': 'SWA CRYSTAL LIGHT AMETHYST', 'SLS': 'SWA CRYSTAL LIGHT SAPPHIRE', 'SLI': 'SWA CRYSTAL LIGHT SIAM',
+        'SCP': 'SWA CRYSTAL PERIDOT', 'SCR': 'SWA CRYSTAL ROSE', 'SRB': 'SWA CRYSTAL RUBY', 'SCS': 'SWA CRYSTAL SAPPHIRE',
+        'SCT': 'SWA CRYSTAL TOPAZ', 'SCZ': 'SWA CZ RUBY', 'SWC': 'SWAROVSKI CZ', 'SWB': 'SWISS BLUE',
+        'TAN': 'TANZANITE', 'TIG': 'TIGER', 'TPZ': 'TOPAZ', 'TOU': 'TOURMALINE', 'TSV': 'TSAVORITE',
+        'TUR': 'TURKIZITE', 'TRQ': 'TURQUOISE', 'WTP': 'WHITE TOPAZ', 'WZI': 'WHITE ZIRCON',
+        'ZRC': 'ZIRCON', 'ZUL': 'ZULTANITE'
       },
       
-      // Metals (position 6 + metal_type context)
       metals: {
-        '10KT': { 'A': '10KY - YELLOW', 'B': '10KW - WHITE', 'C': '10KR - ROSE', 'D': '10KTT - TWO-TONE' },
-        '14KT': { 'P': '14KY - YELLOW', 'Q': '14KW - WHITE', 'R': '14KR - ROSE', 'T': '14KTT - TWO-TONE' },
-        '18KT': { 'E': '18KY - YELLOW', 'F': '18KW - WHITE', 'G': '18KR - ROSE', 'H': '18KTT - TWO-TONE' },
-        '9KT':  { 'X': '9KY - YELLOW', 'Y': '9KW - WHITE', 'Z': '9KR - ROSE', 'W': '9KTT - TWO-TONE' },
-        'SIL':  { 'J': 'RPS - RHODIUM PLATED', 'K': 'YPS - YELLOW PLATED', 'L': 'ROS - ROSE PLATED', 'M': 'TTPS - TWO-TONED PLATED', 'N': '3TPS - THREE-TONED PLATED' },
-        'PLT':  { 'U': 'PLAT - Platinum' },
-        'SPC':  { 'S': 'SPEC - Special' }
+        '10KT': { 'A': '10KY - YELLOW (A)', 'B': '10KW - WHITE (B)', 'C': '10KR - ROSE (C)', 'D': '10KTT - TWO-TONE (D)' },
+        '14KT': { 'P': '14KY - YELLOW (P)', 'Q': '14KW - WHITE (Q)', 'R': '14KR - ROSE (R)', 'T': '14KTT - TWO-TONE (T)' },
+        '18KT': { 'E': '18KY - YELLOW (E)', 'F': '18KW - WHITE (F)', 'G': '18KR - ROSE (G)', 'H': '18KTT - TWO-TONE (H)' },
+        '9KT':  { 'X': '9KY - YELLOW (X)', 'Y': '9KW - WHITE (Y)', 'Z': '9KR - ROSE (Z)', 'W': '9KTT - TWO-TONE (W)' },
+        'SIL':  { 'J': 'RPS - RHODIUM PLATED (J)', 'K': 'YPS - YELLOW PLATED (K)', 'L': 'ROS - ROSE PLATED (L)', 
+                  'M': 'TTPS - TWO-TONED PLATED (M)', 'N': '3TPS - THREE-TONED PLATED (N)' },
+        'PLT':  { 'U': 'PLAT - Platinum (U)' },
+        'SPC':  { 'S': 'SPEC - Special (S)' }
+      },
+      
+      // FIXED: Sizes now show label + letter like "16 inches (A)"
+      sizes: {
+        'N': { 'A': '16 inches (A)', 'B': '17 inches (B)', 'C': '18 inches (C)', 'D': '20 inches (D)', 'E': '22 inches (E)', 'F': '24 inches (F)' },
+        'R': { 'A': '4 (A)', 'B': '4.5 (B)', 'C': '5 (C)', 'D': '5.5 (D)', 'E': '6 (E)', 'F': '6.5 (F)', 'G': '7 (G)', 'H': '7.5 (H)', 'I': '8 (I)', 
+              'J': '8.5 (J)', 'K': '9 (K)', 'L': '9.5 (L)', 'M': '10 (M)', 'N': '10.5 (N)', 'O': '11 (O)', 'P': '11.5 (P)', 'Q': '12 (Q)' },
+        'B': { 'A': '6 inches (A)', 'B': '6.25 inches (B)', 'C': '6.5 inches (C)', 'D': '7 inches (D)', 'E': '7.25 inches (E)', 'F': '7.5 inches (F)', 'G': '8 inches (G)' }
       }
     };
 
-    // Carat decoder (positions 3-5)
-    function decodeCarat(caratCode) {
-      if (caratCode === '000') return 'Not specified';
-      
-      if (caratCode.endsWith('T')) {
-        const whole = caratCode.slice(0, -1);
-        return `${whole}.00+ carats`;
-      }
-      
-      const carat = parseInt(caratCode) / 100;
-      return `${carat.toFixed(2)} carats`;
-    }
-
-    // Main decode function
     window.decodeSKU = function() {
-      // Clear previous state
       const errorBox = document.getElementById('decoder-error');
       const output = document.getElementById('decoder-output');
       errorBox.style.display = 'none';
       output.innerHTML = '';
 
-      // Get SKU
       const skuInput = document.getElementById('sku-input');
       let sku = (skuInput.value || '').replace(/[^A-Z0-9]/g, '').toUpperCase();
       
@@ -138,66 +156,38 @@
       skuInput.classList.remove('field-error');
 
       try {
-        // Parse SKU positions (exactly matches your encoder)
         const stoneCode = sku[0];
         const styleCode = sku[1];
-        const caratGemCode = sku.slice(2, 5);  // positions 3-5
+        const pos3to5 = sku.slice(2, 5);
         const metalCode = sku[5];
-        const uniqueId = sku.slice(6, 12);     // positions 7-12
+        const uniqueId = sku.slice(6, 12);
         const sizeCode = sku[12];
 
-        // Decode each component
-        const decoded = {
-          'SKU': sku,
-          'Stone Type': DECODE_MAP.stones[stoneCode] || 'Unknown (' + stoneCode + ')',
-          'Style': DECODE_MAP.styles[styleCode] || 'Unknown (' + styleCode + ')',
-          'Carat/Gemstone': decodeCarat(caratGemCode) + (isGemstone(caratGemCode) ? ' [GEMSTONE]' : ''),
-          'Unique ID': uniqueId,
-          'Metal Code': metalCode,
-          'Size': DECODE_MAP.sizes[styleCode]?.[sizeCode] || (sizeCode === 'X' ? 'N/A' : 'Unknown (' + sizeCode + ')')
-        };
+        const decoded = [];
+        decoded.push(`<div class="decoded-item"><span class="decoded-label">SKU:</span><span class="decoded-value">${sku}</span></div>`);
+        decoded.push(`<div class="decoded-item"><span class="decoded-label">Stone Type:</span><span class="decoded-value">${DECODE_MAP.stones[stoneCode] || 'Unknown (' + stoneCode + ')'}</span></div>`);
+        decoded.push(`<div class="decoded-item"><span class="decoded-label">Style:</span><span class="decoded-value">${DECODE_MAP.styles[styleCode] || 'Unknown (' + styleCode + ')'}</span></div>`);
 
-        // Infer metal type (this is approximate - needs your metal logic)
-        const metalType = inferMetalType(metalCode);
-        if (metalType && DECODE_MAP.metals[metalType]?.[metalCode]) {
-          decoded['Metal'] = `${metalType} - ${DECODE_MAP.metals[metalType][metalCode]}`;
+        // Gemstone vs Carat
+        if (/^[A-Z]{3}$/.test(pos3to5) && DECODE_MAP.gemstones[pos3to5]) {
+          decoded.push(`<div class="decoded-item"><span class="decoded-label">Gemstone:</span><span class="decoded-value">${DECODE_MAP.gemstones[pos3to5]}</span></div>`);
         } else {
-          decoded['Metal'] = `Code: ${metalCode}`;
+          decoded.push(`<div class="decoded-item"><span class="decoded-label">Carat:</span><span class="decoded-value">${decodeCarat(pos3to5)}</span></div>`);
         }
 
-        // Display results
-        output.innerHTML = `
-          <div class="decoded-item">
-            <span class="decoded-label">SKU:</span>
-            <span class="decoded-value">${decoded.SKU}</span>
-          </div>
-          <div class="decoded-item">
-            <span class="decoded-label">Stone Type:</span>
-            <span class="decoded-value">${decoded['Stone Type']}</span>
-          </div>
-          <div class="decoded-item">
-            <span class="decoded-label">Style:</span>
-            <span class="decoded-value">${decoded.Style}</span>
-          </div>
-          <div class="decoded-item">
-            <span class="decoded-label">Carat/Gemstone:</span>
-            <span class="decoded-value">${decoded['Carat/Gemstone']}</span>
-          </div>
-          <div class="decoded-item">
-            <span class="decoded-label">Metal:</span>
-            <span class="decoded-value">${decoded.Metal}</span>
-          </div>
-          <div class="decoded-item">
-            <span class="decoded-label">Unique ID:</span>
-            <span class="decoded-value">${decoded['Unique ID']}</span>
-          </div>
-          ${sizeCode !== 'X' ? `
-          <div class="decoded-item">
-            <span class="decoded-label">Size:</span>
-            <span class="decoded-value">${decoded.Size}</span>
-          </div>
-          ` : ''}
-        `;
+        // Metal: full name + letter
+        const metalLabel = getMetalLabel(metalCode);
+        decoded.push(`<div class="decoded-item"><span class="decoded-label">Metal:</span><span class="decoded-value">${metalLabel}</span></div>`);
+
+        decoded.push(`<div class="decoded-item"><span class="decoded-label">Unique ID:</span><span class="decoded-value">${uniqueId}</span></div>`);
+
+        // FIXED: Size shows label + letter like "16 inches (A)"
+        if (sizeCode !== 'X') {
+          const sizeLabel = DECODE_MAP.sizes[styleCode]?.[sizeCode] || `Unknown (${sizeCode})`;
+          decoded.push(`<div class="decoded-item"><span class="decoded-label">Size:</span><span class="decoded-value">${sizeLabel}</span></div>`);
+        }
+
+        output.innerHTML = decoded.join('');
 
       } catch (error) {
         errorBox.textContent = 'Invalid SKU format';
@@ -205,38 +195,34 @@
       }
     };
 
-    // Helper functions
-    function isGemstone(code) {
-      // Gemstone codes are 3 letters, carat codes are numbers or end with T
-      return /^[A-Z]{3}$/.test(code);
+    function getMetalLabel(metalCode) {
+      for (const [metalType, codes] of Object.entries(DECODE_MAP.metals)) {
+        if (codes[metalCode]) return codes[metalCode];
+      }
+      return `Unknown (${metalCode})`;
     }
 
-    function inferMetalType(metalCode) {
-      // Simple heuristic - improve based on your metal logic
-      if (['A','B','C','D'].includes(metalCode)) return '10KT';
-      if (['P','Q','R','T'].includes(metalCode)) return '14KT';
-      if (['E','F','G','H'].includes(metalCode)) return '18KT';
-      if (['X','Y','Z','W'].includes(metalCode)) return '9KT';
-      if (['J','K','L','M','N'].includes(metalCode)) return 'SIL';
-      if (metalCode === 'U') return 'PLT';
-      if (metalCode === 'S') return 'SPC';
-      return null;
+    function decodeCarat(caratCode) {
+      if (caratCode === '000') return 'Not specified';
+      if (caratCode.endsWith('T')) {
+        const whole = caratCode.slice(0, -1);
+        return `${whole}.00+ carats`;
+      }
+      const carat = parseInt(caratCode) / 100;
+      return `${carat.toFixed(2)} carats`;
     }
 
-    // Auto-uppercase and format input
     document.addEventListener('DOMContentLoaded', function() {
       const skuInput = document.getElementById('sku-input');
       skuInput.addEventListener('input', function() {
         this.value = this.value.replace(/[^A-Z0-9]/g, '').toUpperCase().slice(0, 13);
       });
-      
-      // Allow Enter key to decode
       skuInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && this.value.length === 13) {
-          decodeSKU();
-        }
+        if (e.key === 'Enter' && this.value.length === 13) decodeSKU();
       });
     });
   </script>
+
+
 </body>
 </html>
