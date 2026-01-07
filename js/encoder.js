@@ -272,26 +272,23 @@ document.addEventListener("DOMContentLoaded", async function () {
   const gemstoneGroup = document.getElementById("gemstone-group");
   const caratGroup = document.getElementById("carat-group");
   const caratInput = document.getElementById("carat");
-  const gemCaratGroup = document.getElementById("gem-carat-group");
-  const gemCaratInput = document.getElementById("gem-carat");
+
 
   function updateStoneDetails() {
     const stoneValue = stoneSelect.value;
 
     if (stoneValue === "G") {
       gemstoneGroup.style.display = "block";
-      gemCaratGroup.style.display = "block";
       caratGroup.style.display = "none";
       caratInput.value = "";
       document.getElementById("gemstone-input").value = "";
       document.getElementById("gemstone").value = "";
     } else {
       gemstoneGroup.style.display = "none";
-      gemCaratGroup.style.display = "none";
-      gemCaratInput.value = "";
       caratGroup.style.display = "block";
     }
   }
+
 
   stoneSelect.addEventListener("change", updateStoneDetails);
   updateStoneDetails();
