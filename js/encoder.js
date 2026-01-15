@@ -3,11 +3,6 @@
 // ---- Constants ----
 const MAX_SKU_LENGTH = 13;
 
-// NEW: Auto-select single-option metals
-const singleOptionMetalTypes = {
-  'SPC': 'S',   // SPEC - Special (S)
-  'PLT': 'U'   // PLAT - Platinum (U)
-};
 
 // ---- Utility: format carat to 3-char string ----
 function formatCaratTo3Chars(rawValue) {
